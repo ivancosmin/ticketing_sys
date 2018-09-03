@@ -47,7 +47,13 @@ class db{
      * @param bool $use_slave
      * @return null
      */
-    function AddOrUpdate($query){
+    function AddOrUpdate($table, $value=array()){
+
+        $title = $value['title'];
+        $text = $value['text'];
+        $grade = $value['grade'];
+        $data = $value['date'];
+        $id_person = $value['id_person'];
 
         $cnx = $this->conn;
 
@@ -55,11 +61,58 @@ class db{
             return null;
         }
 
+        if ($table == "persons")
+        {
+            $query = "INSERT INTO persons (name) VALUES ('$value')";
+        }
+        else if ($table == "details"){
+            $query = "INSERT INTO details (title, text, grade, data, id_person) VALUES ('$title', '$text', '$grade', '$data', '$id_person')";
+        }
+
+
         $cur = mysqli_query ( $cnx,$query);
 
         @mysqli_free_result($cur);
     }
-    
+
+
+    function listDetails ($id){
+
+        $query = "SELECT * FROM details WHERE id='$id'";
+
+        $cnx = $this->conn;
+        $details = mysqli_query($cnx, $query);
+
+        $list = array();
+        while($detail = mysqli_fetch_array($details)) {
+            array_push($list, $detail);
+        }
+        return $list;
+    }
+
+
+    function update($id, $title, $text, $grade, $date, $person_id){
+        $cnx = $this->conn;
+        $date = strtotime($date);
+        $date = date('Y-m-d H:i:s', $date);
+        $query = "UPDATE details SET title='$title', text='$text', grade='$grade', data='$date', id_person='$person_id'  WHERE id='$id'";
+
+        $cur = mysqli_query($cnx, $query);
+        @mysqli_free_result($cur);
+    }
+
+
+    function delete($id){
+        $cnx = $this->conn;
+        $del_id = $id;
+
+        $query = "DELETE FROM details WHERE id='$del_id'";
+
+        $cur = mysqli_query($cnx, $query);
+        @mysqli_free_result($cur);
+    }
+
+
 }
 
 

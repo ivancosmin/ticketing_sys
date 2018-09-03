@@ -21,8 +21,8 @@ $conn = $bdd->connect();
 if (isset($_POST['submit'])) {
 
     $person = $_POST['person_name'];
+    $table = "persons";
 
-    $query = $bdd->AddOrUpdate("INSERT INTO persons (name) VALUES ('$person')");
-
+    $add_p = $bdd->AddOrUpdate($table, $person);
 }
 ?>

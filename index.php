@@ -1,4 +1,7 @@
 <html>
+<?php
+    session_start();
+?>
 <head>
     <meta charset="UTF-8">
     <title>Ticketing System</title>
@@ -26,7 +29,7 @@
                     require_once "pages/add_book.php";
                     break;
                 case 3:
-                    require_once "pages/edit_book.php";
+                    require_once "pages/edit_id.php";
                     break;
                 default:
                     require_once "pages/error.php";
@@ -34,7 +37,7 @@
         }
         else{
             require_once "pages/home.php";
-            echo 's';
+
         }
     ?>
 </section>
