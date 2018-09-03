@@ -34,6 +34,7 @@
         }
         else{
             require_once "pages/home.php";
+            echo 's';
         }
     ?>
 </section>
