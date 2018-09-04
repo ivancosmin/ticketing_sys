@@ -1,10 +1,12 @@
-<html>
 <?php
-    session_start();
+session_start();
 ?>
+<html>
+
 <head>
     <meta charset="UTF-8">
     <title>Ticketing System</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -29,7 +31,7 @@
                     require_once "pages/add_book.php";
                     break;
                 case 3:
-                    require_once "pages/edit_id.php";
+                    require_once "pages/edit_book.php";
                     break;
                 default:
                     require_once "pages/error.php";

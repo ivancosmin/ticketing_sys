@@ -47,31 +47,41 @@ class db{
      * @param bool $use_slave
      * @return null
      */
-    function AddOrUpdate($table, $value=array()){
+    function AddOrUpdate($table, $value=array())
+    {
 
         $title = $value['title'];
         $text = $value['text'];
         $grade = $value['grade'];
         $data = $value['date'];
         $id_person = $value['id_person'];
+        $adress = $value['adress'];
+        $id_localitate = $value['id_localitate'];
 
         $cnx = $this->conn;
 
-        if (!$cnx || $this->status_fatal){
+        if (!$cnx || $this->status_fatal) {
             return null;
         }
 
-        if ($table == "persons")
-        {
+        if ($table == "persons") {
             $query = "INSERT INTO persons (name) VALUES ('$value')";
+        } else if ($table == "details") {
+            $query = "INSERT INTO details (title, text, grade, data, id_person, adress, id_localitate) VALUES ('$title', '$text' ,
+                                            '$grade', '$data', '$id_person', '$adress', '$id_localitate')";
         }
-        else if ($table == "details"){
-            $query = "INSERT INTO details (title, text, grade, data, id_person) VALUES ('$title', '$text', '$grade', '$data', '$id_person')";
-        }
 
 
-        $cur = mysqli_query ( $cnx,$query);
+        $cur = mysqli_query($cnx, $query);
 
+        @mysqli_free_result($cur);
+    }
+
+    function addAdress($id_loc, $adress){
+        $cnx = $this->conn;
+
+        $query = "INSERT INTO adrese (nume, id_localitate) VALUES ('$adress', '$id_loc')";
+        $cur = mysqli_query($cnx, $query);
         @mysqli_free_result($cur);
     }
 
@@ -88,6 +98,47 @@ class db{
             array_push($list, $detail);
         }
         return $list;
+    }
+
+    function listPersons($id){
+        $cnx = $this->conn;
+
+        $query = "SELECT name FROM persons WHERE id='$id'";
+
+        $list = mysqli_query($cnx, $query);
+
+        $name = array();
+        while ($element = mysqli_fetch_array($list)){
+                array_push ($name, $element);
+        }
+
+        $nameToAdd = $name[0]['name'];
+        return $nameToAdd;
+
+
+    }
+
+    function listJudete(){
+        $cnx = $this->conn;
+        $query = "SELECT * FROM judete";
+        $judete = mysqli_query($cnx, $query);
+
+        $jud = array();
+        while ($element = mysqli_fetch_array($judete)){
+            array_push ($jud, $element);
+        }
+        return $jud;
+    }
+
+    function listLocalitati($id_jud){
+        $cnx = $this->conn;
+        $query = "SELECT * FROM localitati WHERE id_judet='$id_jud'";
+        $localitati = mysqli_query($cnx, $query);
+        $loc = array();
+        while ($element = mysqli_fetch_array($localitati)){
+            array_push($loc, $element);
+        }
+        return $loc;
     }
 
 

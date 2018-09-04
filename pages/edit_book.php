@@ -1,16 +1,38 @@
+<form method="post">
+    <table>
+        <tr>
+            <td>Ticket ID:</td>
+            <td><input type="number" name="id" /></td>
+        </tr>
+        <tr aria-colspan="2">
+            <td><input type="submit" name="submit" value="Submit"/></td>
+        </tr>
+    </table>
+</form>
+
 <?php
 include ('class/dbconnect.php');
-$update_id = $_SESSION['update_id'];
-
 $bdd = new db();
 $list = array();
-$list = $bdd->listDetails($update_id);
-    $title = $list[0]['title'];
-    $text = $list[0]['text'];
-    $grade = $list[0]['grade'];
-    $date = $list[0]['data'];
-    $id_person = $list[0]['id_person'];
+    if (isset($_POST['id'])) {
+        $update_id = $_POST['id'];
+        var_dump($_POST['id']);
+        $sss = $_POST['id'];
 
+
+        $list = $bdd->listDetails($update_id);
+    }
+    if(isset($list[0])) {
+        $title = $list[0]['title'];
+        $text = $list[0]['text'];
+        $grade = $list[0]['grade'];
+        $date = $list[0]['data'];
+        $id_person = $list[0]['id_person'];
+    }
+    else{
+        $title = "Introduceti Ticket ID";
+        $text = "Introduceti Ticket ID";
+    }
 
 
 
@@ -19,6 +41,10 @@ $list = $bdd->listDetails($update_id);
 
 <form method="post">
     <table>
+        <tr>
+
+            <td><input type="hidden" name="idd" value="<?php echo $sss; ?>"/></td>
+        </tr>
         <tr>
             <td>Title:</td>
             <td><input type="text" name="title" value="<?php echo $title; ?>"/></td>
@@ -29,7 +55,17 @@ $list = $bdd->listDetails($update_id);
         </tr>
         <tr>
             <td>Grade:</td>
-            <td><input type="number" name="grade" value="<?php echo $grade; ?>"/></td>
+<!--            <td><input type="number" name="grade" value="--><?php //echo $grade; ?><!--"/></td>-->
+            <td>
+                <select name="grade">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </td>
+
         </tr>
         <tr>
             <td>Date:</td>
@@ -37,7 +73,35 @@ $list = $bdd->listDetails($update_id);
         </tr>
         <tr>
             <td>Person ID:</td>
-            <td><input type="number" name="id_person" value="<?php echo $id_person; ?>" /></td>
+<!--            <td><input type="number" name="id_person" value="--><?php //echo $id_person; ?><!--" /></td>-->
+            <td>
+            <select name="id_person">
+                <option value="1">
+                    <?php
+                    $p1 = $bdd->listPersons(1);
+                    echo $p1;
+                    ?>
+                </option>
+                <option value="2">
+                    <?php
+                    $p1 = $bdd->listPersons(2);
+                    echo $p1;
+                    ?>
+                </option>
+                <option value="3">
+                    <?php
+                    $p1 = $bdd->listPersons(3);
+                    echo $p1;
+                    ?>
+                </option>
+                <option value="4">
+                    <?php
+                    $p1 = $bdd->listPersons(4);
+                    echo $p1;
+                    ?>
+                </option>
+            </select>
+            </td>
         </tr>
         <tr aria-colspan="2">
             <td><input type="submit" name="edit" value="Update" /></td>
@@ -49,9 +113,12 @@ $list = $bdd->listDetails($update_id);
 </form>
 
 <?php
-    var_dump($_POST);
+
+
     if (isset($_POST['edit'])){
-        $update = $bdd->update($update_id, $_POST['title'], $_POST['text'], $_POST['grade'], $_POST['date'], $_POST['id_person']);
+        var_dump($_POST['idd']);
+
+        $update = $bdd->update($_POST['idd'], $_POST['title'], $_POST['text'], $_POST['grade'], $_POST['date'], $_POST['id_person']);
 
     }
     else if (isset($_POST['delete'])){
