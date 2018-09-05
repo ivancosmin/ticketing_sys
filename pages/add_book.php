@@ -23,7 +23,7 @@ $conn = $bdd->connect();
 
                             $jud = array();
                             $jud = $bdd->listJudete();
-
+                            echo "<option>" . "Selecteaza judet" . "</option>";
                             foreach ($jud as $value){
 
                                 echo '<option value="' . $value['id'] . '">' . $value['nume']. '</option>';
@@ -39,6 +39,9 @@ $conn = $bdd->connect();
         </tr>
 
         <tr id="adress">
+
+        </tr>
+        <tr id="id_ad">
 
         </tr>
         <tr>
@@ -93,6 +96,7 @@ $conn = $bdd->connect();
         <tr aria-colspan="2">
             <td><input type="submit" name="add_book" value="Add Book" /></td>
         </tr>
+
     </table>
 </form>
 
@@ -109,8 +113,8 @@ $conn = $bdd->connect();
         $details['date'] = strtotime($_POST['date']);
         $details['date'] = date('Y-m-d H:i:s', $details['date']);
         $details['id_person'] = $_POST['id_person'];
-        $details['adress'] = $_POST['addr'];
         $details['id_localitate'] = $value['id'];
+        $details['id_adress'] = $_POST['xxx'];
 
         $add_b = $bdd->AddOrUpdate("details",$details);
 
@@ -147,6 +151,21 @@ $conn = $bdd->connect();
 
             success: function(data){
                 $('#adress').html(data);
+
+            }
+        })
+
+    });
+    $(document).on("change","#id_adress", function(e){
+        var id_adress=$(this).val();
+
+        $.ajax({
+            url: "ceva.php",
+            data: "id_adress=" + id_adress   ,
+            type: "POST",
+
+            success: function(data){
+                $('#id_ad').html(data);
 
             }
         })

@@ -16,6 +16,7 @@ session_start();
         <li><a href="index.php?page=1">Add Person</a></li>
         <li><a href="index.php?page=2">Add Book</a></li>
         <li><a href="index.php?page=3">Edit Book</a></li>
+        <li><a href="index.php?page=4">List Tickets</a></li>
     </ul>
 </nav>
 
@@ -32,6 +33,9 @@ session_start();
                     break;
                 case 3:
                     require_once "pages/edit_book.php";
+                    break;
+                case 4:
+                    require_once "pages/list_ticket.php";
                     break;
                 default:
                     require_once "pages/error.php";
