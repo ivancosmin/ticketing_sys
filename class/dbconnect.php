@@ -85,10 +85,48 @@ class db{
         @mysqli_free_result($cur);
     }
 
+    function list($table, $id=false, $id_use=false){
+        if ($id && $id_use){
+            $query = "SELECT * FROM " . $table . " WHERE " . $id . "=" . $id_use;
+        }
+        else {
+            $query = "SELECT * FROM " . $table;
+        }
 
-    function listDetails ($id){
 
-        $query = "SELECT * FROM details WHERE id_adress='$id'";
+        $cnx = $this->conn;
+        $x = mysqli_query($cnx, $query);
+
+        $list = array();
+        while($det = mysqli_fetch_array($x)) {
+            array_push($list, $det);
+        }
+        return $list;
+    }
+
+    function listOne($table, $id, $id_use, $index){
+        $cnx = $this->conn;
+
+        $query = "SELECT * FROM " . $table . " WHERE " . $id . "=" . $id_use;
+
+        $list = mysqli_query($cnx, $query);
+
+        $li = array();
+        while ($element = mysqli_fetch_array($list)){
+            array_push ($li, $element);
+        }
+
+        $one = $li[0][$index];
+        return $one;
+    }
+
+
+
+
+
+
+    function listDetailsForPersons($id){
+        $query = "SELECT * FROM details WHERE id_person='$id'";
 
         $cnx = $this->conn;
         $details = mysqli_query($cnx, $query);
@@ -100,35 +138,21 @@ class db{
         return $list;
     }
 
-    function listOneAdress ($id){
-
-        $query = "SELECT * FROM adrese WHERE id='$id'";
-
+    function listDetailsForText($input){
         $cnx = $this->conn;
-        $details = mysqli_query($cnx, $query);
+        $query = "SELECT * FROM details WHERE text LIKE '%$input%'";
 
+        $details = mysqli_query($cnx, $query);
         $list = array();
-        while($detail = mysqli_fetch_array($details)) {
+
+        while ($detail = mysqli_fetch_array($details)){
             array_push($list, $detail);
         }
-        $oneadress = $list[0]['nume'];
-        return $oneadress;
+        return $list;
     }
 
-    function listOneLoc ($id){
 
-        $query = "SELECT * FROM localitati WHERE id='$id'";
 
-        $cnx = $this->conn;
-        $details = mysqli_query($cnx, $query);
-
-        $list = array();
-        while($detail = mysqli_fetch_array($details)) {
-            array_push($list, $detail);
-        }
-        $oneloc = $list[0]['nume'];
-        return $oneloc;
-    }
 
     function listIdLoc ($input){
         $query = "SELECT * FROM adrese WHERE nume='$input'";
@@ -164,89 +188,10 @@ class db{
         return $idjud;
     }
 
-    function listOnejud ($id){
-
-        $query = "SELECT * FROM judete WHERE id='$id'";
-
-        $cnx = $this->conn;
-        $details = mysqli_query($cnx, $query);
-
-        $list = array();
-        while($detail = mysqli_fetch_array($details)) {
-            array_push($list, $detail);
-        }
-        $onejud = $list[0]['nume'];
-        return $onejud;
-    }
-
-    function listFullDetails (){
-
-        $query = "SELECT * FROM details";
-
-        $cnx = $this->conn;
-        $details = mysqli_query($cnx, $query);
-
-        $list = array();
-        while($detail = mysqli_fetch_array($details)) {
-            array_push($list, $detail);
-        }
-        return $list;
-    }
-
-    function listPersons($id){
-        $cnx = $this->conn;
-
-        $query = "SELECT name FROM persons WHERE id='$id'";
-
-        $list = mysqli_query($cnx, $query);
-
-        $name = array();
-        while ($element = mysqli_fetch_array($list)){
-                array_push ($name, $element);
-        }
-
-        $nameToAdd = $name[0]['name'];
-        return $nameToAdd;
 
 
-    }
-
-    function listJudete(){
-        $cnx = $this->conn;
-        $query = "SELECT * FROM judete";
-        $judete = mysqli_query($cnx, $query);
-
-        $jud = array();
-        while ($element = mysqli_fetch_array($judete)){
-            array_push ($jud, $element);
-        }
-        return $jud;
-    }
 
 
-    function listLocalitati($id_jud){
-        $cnx = $this->conn;
-        $query = "SELECT * FROM localitati WHERE id_judet='$id_jud'";
-        $localitati = mysqli_query($cnx, $query);
-        $loc = array();
-        while ($element = mysqli_fetch_array($localitati)){
-            array_push($loc, $element);
-        }
-        return $loc;
-    }
-
-    function listAdrese($id_loc){
-        $cnx = $this->conn;
-        $query = "SELECT * FROM adrese WHERE id_localitate='$id_loc'";
-        $adrese = mysqli_query($cnx, $query);
-
-        $a = array();
-        while ($element = mysqli_fetch_array($adrese)){
-            array_push ($a, $element);
-        }
-
-        return $a;
-    }
 
     function listJudAndLoc(){
         $cnx = $this->conn;

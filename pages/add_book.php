@@ -22,7 +22,8 @@ $conn = $bdd->connect();
                         <?php
 
                             $jud = array();
-                            $jud = $bdd->listJudete();
+//                            $jud = $bdd->listJudete();
+                            $jud = $bdd->list("judete");
                             echo "<option>" . "Selecteaza judet" . "</option>";
                             foreach ($jud as $value){
 
@@ -66,27 +67,28 @@ $conn = $bdd->connect();
 <!--            <td><input type="number" name="id_person" /></td>-->
             <td>
                 <select name="id_person">
+
                     <option value="1">
                         <?php
-                            $p1 = $bdd->listPersons(1);
+                        $p1 = $bdd->listOne("persons", "id", 1, "name");
                             echo $p1;
                         ?>
                     </option>
                     <option value="2">
                         <?php
-                        $p1 = $bdd->listPersons(2);
+                        $p1 = $bdd->listOne("persons", "id", 2, "name");
                         echo $p1;
                         ?>
                     </option>
                     <option value="3">
                         <?php
-                        $p1 = $bdd->listPersons(3);
+                        $p1 = $bdd->listOne("persons", "id", 3, "name");
                         echo $p1;
                         ?>
                     </option>
                     <option value="4">
                         <?php
-                        $p1 = $bdd->listPersons(4);
+                        $p1 = $bdd->listOne("persons", "id", 4, "name");
                         echo $p1;
                         ?>
                     </option>

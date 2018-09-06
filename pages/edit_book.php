@@ -20,7 +20,8 @@ $list = array();
         $sss = $_POST['id'];
 
 
-        $list = $bdd->listDetails($update_id);
+        $list = $bdd->list("details","id_adress",$update_id);
+
     }
     if(isset($list[0])) {
         $title = $list[0]['title'];
@@ -78,25 +79,29 @@ $list = array();
             <select name="id_person">
                 <option value="1">
                     <?php
-                    $p1 = $bdd->listPersons(1);
+//                    $p1 = $bdd->listPersons(1);
+                    $p1 = $bdd->listOne("persons", "id", 1, "name");
                     echo $p1;
                     ?>
                 </option>
                 <option value="2">
                     <?php
-                    $p1 = $bdd->listPersons(2);
+//                    $p1 = $bdd->listPersons(2);
+                    $p1 = $bdd->listOne("persons", "id", 2, "name");
                     echo $p1;
                     ?>
                 </option>
                 <option value="3">
                     <?php
-                    $p1 = $bdd->listPersons(3);
+//                    $p1 = $bdd->listPersons(3);
+                    $p1 = $bdd->listOne("persons", "id", 3, "name");
                     echo $p1;
                     ?>
                 </option>
                 <option value="4">
                     <?php
-                    $p1 = $bdd->listPersons(4);
+//                    $p1 = $bdd->listPersons(4);
+                    $p1 = $bdd->listOne("persons", "id", 4, "name");
                     echo $p1;
                     ?>
                 </option>

@@ -5,7 +5,7 @@
     $conn = $bdd->connect();
 
     $details = array();
-    $details = $bdd->listFullDetails();
+    $details = $bdd->list("details");
 
 
 ?>
@@ -31,17 +31,20 @@
                 echo "<td>" . $value['text'] . "</td>";
                 echo "<td>" . $value['grade'] . "</td>";
                 echo "<td>" . $value['data'] . "</td>";
-                echo "<td>" . $bdd->listPersons($value['id_person']) . "</td>";
-                echo "<td>" . $bdd->listOneAdress($value['id_adress']) . "</td>";
-                $adress=$bdd->listOneAdress($value['id_adress']);
+                echo "<td>" . $bdd->listOne("persons","id",$value['id_person'], "name") . "</td>";
+//                echo "<td>" . $bdd->listOneAdress($value['id_adress']) . "</td>";
+                echo "<td>" . $bdd->listOne("adrese","id",$value['id_adress'],"nume") . "</td>";
+                $adress=$bdd->listOne("adrese","id",$value['id_adress'],"nume");
 
                 $idloc = $bdd->listIdLoc($adress);
 
 
-                echo "<td>" . $bdd->listOneLoc($idloc) . "</td>";
-                $localitate = $bdd->listOneLoc($idloc);
+
+//                echo "<td>" . $bdd->listOneLoc($idloc) . "</td>";
+                echo "<td>" . $bdd->listOne("localitati", "id", $idloc,"nume" ) . "</td>";
+                $localitate = $bdd->listOne("localitati", "id", $idloc,"nume" );
                 $idjud = $bdd->listIdJud($localitate);
-                echo "<td>" . $bdd->listOnejud($idjud) . "</td>";
+                echo "<td>" . $bdd->listOne("judete", "id", $idjud,"nume" ) . "</td>";
 
             echo "</tr>";
 
@@ -63,7 +66,7 @@
             <select name="judet" id="jud">
                 <?php
                     $jud = array();
-                    $jud = $bdd->listJudete();
+                    $jud = $bdd->list("judete");
                     echo "<option>" . "Selecteaza judet" . "</option>";
                     foreach ($jud as $value){
                         echo '<option value="' . $value['id'] . '">' . $value['nume']. '</option>';
@@ -84,8 +87,72 @@
 
     </div>
 </form>
+<form method="post" >
+    <table align="center">
+        <tr>
+            <td>
+                Persoana:
+            </td>
+            <td>
+                <select name="persoana" id="pers">
+                    <?php
+                    $jud = array();
+                    $jud = $bdd->list("persons");
+                    echo "<option>" . "Selecteaza persoana" . "</option>";
+                    foreach ($jud as $value){
+                        echo '<option value="' . $value['id'] . '">' . $value['name']. '</option>';
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+    </table>
+</form>
 
+<div id="list_persons">
 
+</div>
+
+<form method="post">
+    <table align="center">
+        <tr>
+            <td>Introduceti textul:</td>
+            <td><input type="text" name="input" /></td>
+        </tr>
+        <tr aria-colspan="2">
+            <td><input type="submit" name="submit" value="Submit" /></td>
+        </tr>
+    </table>
+</form>
+
+<?php
+    if(isset($_POST['submit'])){
+        $list = array();
+        $list = $bdd->listDetailsForText($_POST['input']);
+
+        echo "<table border='1' align='center'>";
+        echo "<thead>";
+        echo "<th>" . "Title" . "</th>";
+        echo "<th>" . "Text" . "</th>";
+        echo "<th>" . "Grade" . "</th>";
+        echo "<th>" . "Data" . "</th>";
+        echo "</thead>";
+
+        echo "<tbody>";
+        echo '<tr>';
+        foreach ($list as $li){
+            echo "<tr>";
+            echo "<td>" . $li['title'] . "</td>";
+            echo "<td>" . $li['text'] . "</td>";
+            echo "<td>" . $li['grade'] . "</td>";
+            echo "<td>" . $li['data'] . "</td>";
+            echo "</tr>";
+        }
+        echo '</tr>';
+        echo "</tbody>";
+        echo "</table>";
+    }
+?>
 
 
 <script type="text/javascript">
@@ -117,6 +184,20 @@
 
             }
         });
+    });
+
+    $(document).on("change","#pers", function(){
+        var id_pers= $(this).val();
+
+        $.ajax({
+            url: "listing.php",
+            data: "id_pers=" + id_pers   ,
+            type: "POST",
+            success: function(data){
+                $('#list_persons').html(data);
+
+            }
+        })
     });
 
 </script>
