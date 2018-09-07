@@ -1,12 +1,11 @@
 
 <?php
-    include ('class/dbconnect.php');
-    $bdd = new db();
-    $conn = $bdd->connect();
+include ("classes/Connection.php");
+Connection::getConnection(array("host"=>"localhost","database"=>"ticketing_sys","user"=>"root","password"=>""));
 
     $details = array();
-    $details = $bdd->list("details");
-
+//    $details = $bdd->list("details");
+    $details = Connection::listingAll("details")
 
 ?>
 
@@ -31,20 +30,40 @@
                 echo "<td>" . $value['text'] . "</td>";
                 echo "<td>" . $value['grade'] . "</td>";
                 echo "<td>" . $value['data'] . "</td>";
-                echo "<td>" . $bdd->listOne("persons","id",$value['id_person'], "name") . "</td>";
+                echo "<td>" . Connection::listOne("persons", "id", $value['id_person'], "name") . "</td>";
+//                echo "<td>" . $bdd->listOne("persons","id",$value['id_person'], "name") . "</td>";
 //                echo "<td>" . $bdd->listOneAdress($value['id_adress']) . "</td>";
-                echo "<td>" . $bdd->listOne("adrese","id",$value['id_adress'],"nume") . "</td>";
-                $adress=$bdd->listOne("adrese","id",$value['id_adress'],"nume");
+//                echo "<td>" . $bdd->listOne("adrese","id",$value['id_adress'],"nume") . "</td>";
+            echo "<td>" . Connection::listOne("adrese","id",$value['id_adress'],"nume") . "</td>";
 
-                $idloc = $bdd->listIdLoc($adress);
+
+//                $adress=$bdd->listOne("adrese","id",$value['id_adress'],"nume");
+                    $adress=Connection::listOne("adrese","id",$value['id_adress'],"nume");
+
+//            $idloc = $bdd->listIdLoc($adress);
+
+//            $adr = "'" . $adress . "'";
+//            $id_loc = Connection::listOne("adrese","nume", $adr ,"id_localitate");
+//                echo $id_loc . "asdadas" ;
+                $id_loc = Connection::listForVariable("adrese", "nume", $adress, "id_localitate" );
 
 
 
 //                echo "<td>" . $bdd->listOneLoc($idloc) . "</td>";
-                echo "<td>" . $bdd->listOne("localitati", "id", $idloc,"nume" ) . "</td>";
-                $localitate = $bdd->listOne("localitati", "id", $idloc,"nume" );
-                $idjud = $bdd->listIdJud($localitate);
-                echo "<td>" . $bdd->listOne("judete", "id", $idjud,"nume" ) . "</td>";
+//                    echo $id_loc;
+                    $localitate = Connection::listOne("localitati", "id", $id_loc, "nume");
+//                  echo $localitate ;
+//
+                    echo "<td>" .$localitate . "</td>";
+//
+//
+////                echo "<td>" . $bdd->listOne("localitati", "id", $idloc,"nume" ) . "</td>";
+////                $localitate = $bdd->listOne("localitati", "id", $idloc,"nume" );
+////                $idjud = $bdd->listIdJud($localitate);
+//
+                $idjud = Connection::listForVariable("localitati","nume",$localitate,"id_judet");
+//
+                echo "<td>" . Connection::listOne("judete", "id", $idjud,"nume" ) . "</td>";
 
             echo "</tr>";
 
@@ -66,7 +85,8 @@
             <select name="judet" id="jud">
                 <?php
                     $jud = array();
-                    $jud = $bdd->list("judete");
+//                    $jud = $bdd->list("judete");
+                    $jud = Connection::listingAll("judete");
                     echo "<option>" . "Selecteaza judet" . "</option>";
                     foreach ($jud as $value){
                         echo '<option value="' . $value['id'] . '">' . $value['nume']. '</option>';
@@ -97,7 +117,8 @@
                 <select name="persoana" id="pers">
                     <?php
                     $jud = array();
-                    $jud = $bdd->list("persons");
+//                    $jud = $bdd->list("persons");
+                    $jud = Connection::listingAll("persons");
                     echo "<option>" . "Selecteaza persoana" . "</option>";
                     foreach ($jud as $value){
                         echo '<option value="' . $value['id'] . '">' . $value['name']. '</option>';
@@ -128,7 +149,12 @@
 <?php
     if(isset($_POST['submit'])){
         $list = array();
-        $list = $bdd->listDetailsForText($_POST['input']);
+//        $list = $bdd->listDetailsForText($_POST['input']);
+
+        $list = Connection::listForText("details", $_POST['input']);
+//        echo "<pre>";
+//        var_dump($list);
+//        echo "</pre>";
 
         echo "<table border='1' align='center'>";
         echo "<thead>";

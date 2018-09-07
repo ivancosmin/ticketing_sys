@@ -1,7 +1,6 @@
 <?php
-include ('class/dbconnect.php');
-$bdd = new db();
-$conn = $bdd->connect();
+include ("classes/Connection.php");
+Connection::getConnection(array("host"=>"localhost","database"=>"ticketing_sys","user"=>"root","password"=>""));
 ?>
 
 <form method="post">
@@ -23,7 +22,8 @@ $conn = $bdd->connect();
 
                             $jud = array();
 //                            $jud = $bdd->listJudete();
-                            $jud = $bdd->list("judete");
+//                            $jud = $bdd->list("judete");
+                            $jud = Connection::listingAll("judete");
                             echo "<option>" . "Selecteaza judet" . "</option>";
                             foreach ($jud as $value){
 
@@ -70,25 +70,29 @@ $conn = $bdd->connect();
 
                     <option value="1">
                         <?php
-                        $p1 = $bdd->listOne("persons", "id", 1, "name");
+//                        $p1 = $bdd->listOne("persons", "id", 1, "name");
+                        $p1 = Connection::listOne("persons", "id", 1,  "name");
                             echo $p1;
                         ?>
                     </option>
                     <option value="2">
                         <?php
-                        $p1 = $bdd->listOne("persons", "id", 2, "name");
+//                        $p1 = $bdd->listOne("persons", "id", 2, "name");
+                        $p1 = Connection::listOne("persons", "id", 2,  "name");
                         echo $p1;
                         ?>
                     </option>
                     <option value="3">
                         <?php
-                        $p1 = $bdd->listOne("persons", "id", 3, "name");
+//                        $p1 = $bdd->listOne("persons", "id", 3, "name");
+                        $p1 = Connection::listOne("persons", "id", 3,  "name");
                         echo $p1;
                         ?>
                     </option>
                     <option value="4">
                         <?php
-                        $p1 = $bdd->listOne("persons", "id", 4, "name");
+//                        $p1 = $bdd->listOne("persons", "id", 4, "name");
+                        $p1 = Connection::listOne("persons", "id", 4,  "name");
                         echo $p1;
                         ?>
                     </option>
@@ -112,13 +116,14 @@ $conn = $bdd->connect();
         $details['title'] = $_POST['title'];
         $details['text'] = $_POST['text'];
         $details['grade'] = $_POST['grade'];
-        $details['date'] = strtotime($_POST['date']);
-        $details['date'] = date('Y-m-d H:i:s', $details['date']);
+//        $details['data'] = strtotime($_POST['date']);
+        $details['data'] = date('Y-m-d', strtotime($_POST['date']));
         $details['id_person'] = $_POST['id_person'];
-        $details['id_localitate'] = $value['id'];
         $details['id_adress'] = $_POST['xxx'];
 
-        $add_b = $bdd->AddOrUpdate("details",$details);
+//        $add_b = $bdd->AddOrUpdate("details",$details);
+
+        Connection::insertData("details", $details);
 
 
     }

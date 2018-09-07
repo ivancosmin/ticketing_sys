@@ -1,6 +1,6 @@
 <?php
-include('class/dbconnect.php');
-$bdd = new db();
+include ("classes/Connection.php");
+Connection::getConnection(array("host"=>"localhost","database"=>"ticketing_sys","user"=>"root","password"=>""));
 
     if (isset($_POST['id'])) {
 
@@ -12,8 +12,8 @@ $bdd = new db();
 
         $loc = array();
 //        $loc = $bdd->listLocalitati($_POST['id']);
-        $loc = $bdd->list("localitati", "id_judet", $_POST['id']);
-        var_dump($loc);
+//        $loc = $bdd->list("localitati", "id_judet", $_POST['id']);
+        $loc = Connection::listingAll("localitati", "id_judet", $_POST['id']);
         foreach ($loc as $value) {
 
             echo '<option value="' . $value['id'] . '">' . $value['nume'] . '</option>';
@@ -32,8 +32,8 @@ $bdd = new db();
         echo "<select name='adresa' id='id_adress' >";
         echo "<option>" . "Selecteaza adresa" . "</option>";
         $adr = array();
-        $adr = $bdd->list("adrese","id_localitate", $_POST['id_loc']);
-
+//        $adr = $bdd->list("adrese","id_localitate", $_POST['id_loc']);
+        $adr = Connection::listingAll("adrese", "id_localitate", $_POST['id_loc']);
         foreach ($adr as $values) {
 
             echo '<option value="' . $values['id'] . '">' . $values['nume'] . '</option>';

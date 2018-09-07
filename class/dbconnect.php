@@ -47,7 +47,8 @@ class db{
      * @param bool $use_slave
      * @return null
      */
-    function AddOrUpdate($table, $value=array())
+
+    function AddOrUpdate($table, $value=array()) //done
     {
 
         $title = $value['title'];
@@ -55,7 +56,6 @@ class db{
         $grade = $value['grade'];
         $data = $value['date'];
         $id_person = $value['id_person'];
-
         $id_adress = $value['id_adress'];
 
         $cnx = $this->conn;
@@ -77,15 +77,9 @@ class db{
         @mysqli_free_result($cur);
     }
 
-    function addAdress($id_loc, $adress){
-        $cnx = $this->conn;
 
-        $query = "INSERT INTO adrese (nume, id_localitate) VALUES ('$adress', '$id_loc')";
-        $cur = mysqli_query($cnx, $query);
-        @mysqli_free_result($cur);
-    }
 
-    function list($table, $id=false, $id_use=false){
+    function list($table, $id=false, $id_use=false){ //done
         if ($id && $id_use){
             $query = "SELECT * FROM " . $table . " WHERE " . $id . "=" . $id_use;
         }

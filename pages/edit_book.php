@@ -1,3 +1,8 @@
+<?php
+include ("classes/Connection.php");
+Connection::getConnection(array("host"=>"localhost","database"=>"ticketing_sys","user"=>"root","password"=>""));
+?>
+
 <form method="post">
     <table>
         <tr>
@@ -11,24 +16,26 @@
 </form>
 
 <?php
-include ('class/dbconnect.php');
-$bdd = new db();
+//include ('class/dbconnect.php');
+//$bdd = new db();
 $list = array();
     if (isset($_POST['id'])) {
         $update_id = $_POST['id'];
-        var_dump($_POST['id']);
         $sss = $_POST['id'];
+//        $list = $bdd->list("details","id_adress",$update_id);
 
+         $list = Connection::listOne("details", "id", $_POST['id']);
 
-        $list = $bdd->list("details","id_adress",$update_id);
-
+//        echo "<pre>";
+//        var_dump($list);
+//        echo "</pre>";
     }
     if(isset($list[0])) {
-        $title = $list[0]['title'];
-        $text = $list[0]['text'];
-        $grade = $list[0]['grade'];
-        $date = $list[0]['data'];
-        $id_person = $list[0]['id_person'];
+        $title = $list['title'];
+        $text = $list['text'];
+        $grade = $list['grade'];
+        $date = $list['data'];
+        $id_person = $list['id_person'];
     }
     else{
         $title = "Introduceti Ticket ID";
@@ -80,28 +87,32 @@ $list = array();
                 <option value="1">
                     <?php
 //                    $p1 = $bdd->listPersons(1);
-                    $p1 = $bdd->listOne("persons", "id", 1, "name");
+//                    $p1 = $bdd->listOne("persons", "id", 1, "name");
+                    $p1 = Connection::listOne("persons", "id", 1,  "name");
                     echo $p1;
                     ?>
                 </option>
                 <option value="2">
                     <?php
 //                    $p1 = $bdd->listPersons(2);
-                    $p1 = $bdd->listOne("persons", "id", 2, "name");
+//                    $p1 = $bdd->listOne("persons", "id", 2, "name");
+                    $p1 = Connection::listOne("persons", "id", 2,  "name");
                     echo $p1;
                     ?>
                 </option>
                 <option value="3">
                     <?php
 //                    $p1 = $bdd->listPersons(3);
-                    $p1 = $bdd->listOne("persons", "id", 3, "name");
+//                    $p1 = $bdd->listOne("persons", "id", 3, "name");
+                    $p1 = Connection::listOne("persons", "id", 3,  "name");
                     echo $p1;
                     ?>
                 </option>
                 <option value="4">
                     <?php
 //                    $p1 = $bdd->listPersons(4);
-                    $p1 = $bdd->listOne("persons", "id", 4, "name");
+//                    $p1 = $bdd->listOne("persons", "id", 4, "name");
+                    $p1 = Connection::listOne("persons", "id", 4,  "name");
                     echo $p1;
                     ?>
                 </option>
@@ -121,9 +132,17 @@ $list = array();
 
 
     if (isset($_POST['edit'])){
-        var_dump($_POST['idd']);
 
-        $update = $bdd->update($_POST['idd'], $_POST['title'], $_POST['text'], $_POST['grade'], $_POST['date'], $_POST['id_person']);
+        $details = array();
+        $details['title'] = $_POST['title'];
+        $details['text'] = $_POST['text'];
+        $details['grade'] = $_POST['grade'];
+        $details['data'] = date('Y-m-d', strtotime($_POST['date']));
+        $details['id_person'] = $_POST['id_person'];
+
+        Connection::updateData("details", $details, $_POST['idd']);
+
+//        $update = $bdd->update($_POST['idd'], $_POST['title'], $_POST['text'], $_POST['grade'], $_POST['date'], $_POST['id_person']);
 
     }
     else if (isset($_POST['delete'])){

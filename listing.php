@@ -1,7 +1,7 @@
 <?php
 
-include('class/dbconnect.php');
-$bdd = new db();
+include ("classes/Connection.php");
+Connection::getConnection(array("host"=>"localhost","database"=>"ticketing_sys","user"=>"root","password"=>""));
 
 
 if (isset($_POST['id_jud'])) {
@@ -13,7 +13,8 @@ if (isset($_POST['id_jud'])) {
 
 
     $loc = array();
-    $loc = $bdd->list("localitati","id_judet",$_POST['id_jud']);
+//    $loc = $bdd->list("localitati","id_judet",$_POST['id_jud']);
+    $loc = Connection::listingAll("localitati", "id_judet",  $_POST['id_jud']);
 
     foreach ($loc as $value) {
 
@@ -29,8 +30,9 @@ if (isset($_POST['id_loc'])){
     $id = $_POST['id_loc'];
 
     $adrese = array();
-    $adrese = $bdd->list("adrese","id_localitate",$id);
-    $details = array();
+//    $adrese = $bdd->list("adrese","id_localitate",$id);
+    $adrese = Connection::listingAll("adrese", "id_localitate", $id);
+//    $details = array();
 
     echo "<table border='1' align='center'>";
         echo "<thead>";
@@ -46,8 +48,11 @@ if (isset($_POST['id_loc'])){
     echo '<tr>';
     foreach ($adrese as $value){
         echo "<tr>";
-        $details = $bdd->list("details","id_adress", $value['id']);
+//        $details = $bdd->list("details","id_adress", $value['id']);
+            $details = Connection::listingAll("details", "id_adress", $value['id']);
+            echo "<pre>";
 
+            echo "</pre>";
         echo "<td>" . $details[0]['title'] . "</td>";
         echo "<td>" . $details[0]['text'] . "</td>";
         echo "<td>" . $details[0]['grade'] . "</td>";
@@ -63,8 +68,8 @@ if (isset($_POST['id_loc'])){
     if(isset($_POST['id_pers'])){
 
         $detalii = array();
-        $detalii = $bdd->listDetailsForPersons($_POST['id_pers']);
-
+//        $detalii = $bdd->listDetailsForPersons($_POST['id_pers']);
+        $detalii = Connection::listingAll("details", "id_person", $_POST['id_pers']);
         echo "<table border='1' align='center'>";
         echo "<thead>";
         echo "<th>" . "Title" . "</th>";
