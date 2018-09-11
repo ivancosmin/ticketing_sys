@@ -120,8 +120,9 @@ class Connection
         return $list;
     }
 
-    static function listForVariable($table, $camp, $input, $index){
-        $stmt = self::$conn->prepare("SELECT * FROM " . $table . " WHERE " . $camp . " LIKE '%" . $input . "%'" );
+    static function listForVariable($table, $camp, $input, $index)
+    {
+        $stmt = self::$conn->prepare("SELECT * FROM " . $table . " WHERE " . $camp . " LIKE '%" . $input . "%'");
 //        echo "SELECT * FROM " . $table . " WHERE " . $camp . " LIKE '%" . $input . "'%" ;
         $stmt->execute();
         $list = $stmt->fetchAll();
@@ -130,7 +131,36 @@ class Connection
 //        echo "</pre>";
         return $list[0][$index];
     }
+        static function listForVariable2($table, $camp, $input){
+        $stmt = self::$conn->prepare("SELECT * FROM " . $table . " WHERE " . $camp . " LIKE '%" . $input . "%'" );
+//        echo "SELECT * FROM " . $table . " WHERE " . $camp . " LIKE '%" . $input . "'%" ;
+        $stmt->execute();
+        $list = $stmt->fetchAll();
+//        echo "<pre>";
+//        var_dump($list);
+//        echo "</pre>";
+        return $list;
+    }
 
+    static function insertFile ($name, $id_ticket){
+        $stmt = self::$conn->prepare("INSERT INTO files (file, id_ticket ) VALUES ('$name', $id_ticket)");
+        $stmt->execute();
+    }
+
+    static function delete($id){
+        $stmt = self::$conn->prepare("DELETE FROM details WHERE id='$id'");
+
+        $stmt->execute();
+    }
+
+    static function deleteFile($input){
+        $stmt = self::$conn->prepare("DELETE FROM files WHERE id_ticket='$input' ");
+        $stmt->execute();
+    }
+    static function deleteFileBtn($input){
+        $stmt = self::$conn->prepare("DELETE FROM files WHERE id='$input' ");
+        $stmt->execute();
+    }
 
     /**
      * @return PDO

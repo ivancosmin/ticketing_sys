@@ -3,14 +3,38 @@ include ("classes/Connection.php");
 Connection::getConnection(array("host"=>"localhost","database"=>"ticketing_sys","user"=>"root","password"=>""));
 ?>
 
+
+
 <form method="post">
     <table>
         <tr>
             <td>Ticket ID:</td>
-            <td><input type="number" name="id" /></td>
+<!--            <td><input type="number" name="id" /></td>-->
+            <td>
+
+                <select class="js-example-basic-single" id='meSelect2' name="state"  style="width: 60px;">
+                    <?php
+                    $dtls = array();
+                    $dtls = Connection::listingAll("details");
+
+                    foreach ($dtls as $value){
+                        echo "<option   name='mySelect2' value='". $value['id'] . "'>" . $value['id'] . "</option>";
+                    }
+
+                    ?>
+                </select>
+            </td>
         </tr>
         <tr aria-colspan="2">
             <td><input type="submit" name="submit" value="Submit"/></td>
+
+
+        </tr>
+        <tr >
+            <td id="select">
+
+            </td>
+
         </tr>
     </table>
 </form>
@@ -18,9 +42,12 @@ Connection::getConnection(array("host"=>"localhost","database"=>"ticketing_sys",
 <?php
 //include ('class/dbconnect.php');
 //$bdd = new db();
+
 $list = array();
     if (isset($_POST['id'])) {
+
         $update_id = $_POST['id'];
+        $_SESSION['id'] = $update_id;
         $sss = $_POST['id'];
 //        $list = $bdd->list("details","id_adress",$update_id);
 
@@ -29,6 +56,9 @@ $list = array();
 //        echo "<pre>";
 //        var_dump($list);
 //        echo "</pre>";
+    }
+    else{
+        echo "no id";
     }
     if(isset($list[0])) {
         $title = $list['title'];
@@ -51,7 +81,7 @@ $list = array();
     <table>
         <tr>
 
-            <td><input type="hidden" name="idd" value="<?php echo $sss; ?>"/></td>
+            <td><input type="hidden"  name="idd" value="<?php echo $sss; ?>"/></td>
         </tr>
         <tr>
             <td>Title:</td>
@@ -120,13 +150,53 @@ $list = array();
             </td>
         </tr>
         <tr aria-colspan="2">
-            <td><input type="submit" name="edit" value="Update" /></td>
+            <td><input type="submit" id="hide" name="edit" value="Update" /></td>
         </tr>
+
         <tr aria-colspan="2">
-            <td><input type="submit" name="delete" value="Delete" /></td>
+            <td><input type="submit" name="delete" value="Delete Ticket" /></td>
+        </tr>
+
+    </table>
+</form>
+<div id="update_info">
+
+</div>
+<form method="GET">
+    <table>
+
+        <thead>
+            <th>File name</th>
+            <th>Action</th>
+        </thead>
+
+        <?php
+
+        $files = Connection::listingAll("files", "id_ticket", $_SESSION['id']);
+//        echo "<pre>";
+//        var_dump($files);
+//        echo "</pre>";
+        foreach ($files as $file){
+                echo "<tr>";
+                    echo "<td>";
+                        echo $file['file'];
+                    echo "</td>";
+                    echo "<td>";
+                        echo "<a href='index.php?page=3?del=" . $file['id'] . "' class='btn ' >Delete</a>";
+                    echo "</td>";
+                echo "</tr>";
+        }
+
+        ?>
+
+        <tr aria-colspan="2">
+            <td><input type="submit" name="delete_file" value="Delete All Files" /></td>
         </tr>
     </table>
 </form>
+<!--<div id="select">-->
+<!---->
+<!--</div>-->
 
 <?php
 
@@ -139,15 +209,100 @@ $list = array();
         $details['grade'] = $_POST['grade'];
         $details['data'] = date('Y-m-d', strtotime($_POST['date']));
         $details['id_person'] = $_POST['id_person'];
-
+        $json = json_encode($details);
         Connection::updateData("details", $details, $_POST['idd']);
 
 //        $update = $bdd->update($_POST['idd'], $_POST['title'], $_POST['text'], $_POST['grade'], $_POST['date'], $_POST['id_person']);
 
     }
     else if (isset($_POST['delete'])){
-        $del = $bdd->delete($update_id);
+        Connection::delete($_SESSION['id']);
 }
+    if (isset($_GET['delete_file'])){
+        Connection::deleteFile($_SESSION['id']);
+    }
 
+    if (isset($_GET['page'])){
+        $id_for_delete= substr($_GET['page'], -1);
+            Connection::deleteFileBtn($id_for_delete);
+
+    }
 
 ?>
+
+<script>
+
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2({
+            placeholder: 'Select an option'
+        });
+
+           });
+
+    $(document).on("change", "#meSelect2", function(){
+        var key = $(this).val();
+        $.ajax({
+            url: "data.php",
+            data: "key=" + key,
+            type: "POST",
+            success: function (data) {
+
+                $('#select').html(data);
+                // $('.select2-search__field').html(data);
+            }
+        })
+    });
+
+    $(document).on("change", ".select2-search__field", function(){
+        var key = $(this).val();
+        $.ajax({
+            url: "data.php",
+            data: "key=" + key,
+            type: "POST",
+            success: function (data) {
+
+                $('#select').html(data);
+                // $('.select2-search__field').html(data);
+            }
+        })
+    });
+
+
+
+
+    // $(document).on("keyup", ".select2-search__field", function(){
+    //     var key = $(this).val();
+    //     $.ajax({
+    //         url: "data.php",
+    //         data: "key=" + key,
+    //         type: "POST",
+    //         success: function (data) {
+    //
+    //             $('#select').html(data);
+    //             // $('.select2-search__field').html(data);
+    //         }
+    //     })
+    // });
+
+
+
+
+        //json = <?php //echo $json ?>//;
+
+
+    // $.ajax({
+    //    type: "POST",
+    //    url: "data.php",
+    //    data: {details : json},
+    //    success: function(data){
+    //
+    //        $('#update_info').html(data);
+    //        $("#hide").hide();
+    //    }
+    // });
+    //
+    // $("#hide").click(function(){
+    //     $("#hide").hide();
+    // });
+
+</script>
