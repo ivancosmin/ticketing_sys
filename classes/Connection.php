@@ -40,6 +40,27 @@ class Connection
         return self::$conn;
     }
 
+    static function deleteFile($table, $value=array()){
+        $values = array_values($value);
+
+        $new_values = array();
+        foreach ($values as $value)
+            array_push($new_values, $value );
+        $escaped_values = implode(", ", array_values($new_values));
+
+        $stmt = self::$conn->prepare("DELETE FROM " . $table . " WHERE id IN (" . $escaped_values . ")" );
+
+        $stmt->execute();
+//        echo "<pre>";
+//        var_dump($escaped_values);
+//        echo "</pre>";
+    }
+
+    static function deleteAll(){
+        $stmt = self::$conn->prepare("TRUNCATE TABLE files");
+        $stmt->execute();
+    }
+
     static function insertData($table, $value=array()){ //AddOrUpdate sau //Add
 //        echo "<pre>";
 //        var_dump($value);
@@ -70,6 +91,13 @@ class Connection
 
         }
 
+        static function listingLimit($query){
+
+            $stmt = self::$conn->prepare($query);
+            $stmt->execute();
+            $list = $stmt->fetchAll();
+            return $list;
+        }
 
     static function listingAll($table, $id=false, $id_use=false){ //List all
         if($id && $id_use){
@@ -153,14 +181,8 @@ class Connection
         $stmt->execute();
     }
 
-    static function deleteFile($input){
-        $stmt = self::$conn->prepare("DELETE FROM files WHERE id_ticket='$input' ");
-        $stmt->execute();
-    }
-    static function deleteFileBtn($input){
-        $stmt = self::$conn->prepare("DELETE FROM files WHERE id='$input' ");
-        $stmt->execute();
-    }
+
+
 
     /**
      * @return PDO

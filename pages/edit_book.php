@@ -53,6 +53,8 @@ $list = array();
 
          $list = Connection::listOne("details", "id", $_POST['id']);
 
+
+
 //        echo "<pre>";
 //        var_dump($list);
 //        echo "</pre>";
@@ -150,11 +152,17 @@ $list = array();
             </td>
         </tr>
         <tr aria-colspan="2">
-            <td><input type="submit" id="hide" name="edit" value="Update" /></td>
+            <td><input type="submit" id="hide" name="edit" value="Update" class="btn btn-primary" /></td>
         </tr>
 
         <tr aria-colspan="2">
-            <td><input type="submit" name="delete" value="Delete Ticket" /></td>
+<!--            <td><input type="submit" id="btn_export" name="export" value="Export" /></td>-->
+            <td><a href="http://localhost/ticketing_sys/exportPDF/export_pdf.php?id=<?php echo $sss ?>" id='btn_export' class='btn btn-success' target='_blank'>Export</a></td>
+        </tr>
+
+
+        <tr aria-colspan="2">
+            <td><input type="submit" name="delete" value="Delete Ticket" class = "btn btn-danger"/></td>
         </tr>
 
     </table>
@@ -162,10 +170,11 @@ $list = array();
 <div id="update_info">
 
 </div>
-<form method="GET">
+<form method="post">
     <table>
 
         <thead>
+        <th> Checked</th>
             <th>File name</th>
             <th>Action</th>
         </thead>
@@ -179,10 +188,16 @@ $list = array();
         foreach ($files as $file){
                 echo "<tr>";
                     echo "<td>";
-                        echo $file['file'];
+                        echo  "<input type='checkbox' name='check_list[]' value='" . $file['id'] . "'></input>" ;
                     echo "</td>";
                     echo "<td>";
-                        echo "<a href='index.php?page=3?del=" . $file['id'] . "' class='btn ' >Delete</a>";
+                        echo $file['file'];
+
+                    echo "</td>";
+                    echo "<td>";
+//                        echo "<a href='index.php?page=3?del=" . $file['id'] . "' class='btn ' >Delete</a>";
+//                        echo "<a href='index.php?page=3?dwn=" . $file['id'] . "' class='btn'  >Download</a>";
+            echo "<a href='http://localhost/ticketing_sys/upload_files/" . $file['file'] . "' class='btn' target='_blank'  >Download</a>";
                     echo "</td>";
                 echo "</tr>";
         }
@@ -190,8 +205,12 @@ $list = array();
         ?>
 
         <tr aria-colspan="2">
-            <td><input type="submit" name="delete_file" value="Delete All Files" /></td>
+            <td><input type="submit" name="delete_file" value="Delete Checked Files" /></td>
         </tr>
+        <tr aria-colspan="2">
+            <td><input type="submit" name="delete_all" value="Delete All Files" /></td>
+        </tr>
+
     </table>
 </form>
 <!--<div id="select">-->
@@ -220,13 +239,47 @@ $list = array();
 }
     if (isset($_GET['delete_file'])){
         Connection::deleteFile($_SESSION['id']);
-    }
-
-    if (isset($_GET['page'])){
-        $id_for_delete= substr($_GET['page'], -1);
-            Connection::deleteFileBtn($id_for_delete);
 
     }
+
+//    if (isset($_GET['page'])){
+//        $id_for_delete= substr($_GET['page'], -1);
+//            Connection::deleteFileBtn($id_for_delete);
+//
+//    }
+
+        if (isset($_POST['delete_file'])) {
+
+//            echo "<pre>";
+//            var_dump($_POST['check_list']);
+//            echo "</pre>";
+
+
+            $ids = $_POST['check_list'];
+
+
+            foreach ($ids as $value){
+
+                $path = Connection::listOne("files", "id", $value);
+                $url = '/ticketing_sys/upload_files/' . $path['file'];
+                echo $url;
+
+                   unlink( $_SERVER['DOCUMENT_ROOT'] . $url);
+            }
+            Connection::deleteFile("files", $_POST['check_list']);
+//            if (!unlink($files))
+//            {
+//                echo ("Error deleting $files");
+//            }
+//            else
+//            {
+//                echo ("Deleted $files");
+//            }
+        }
+
+        if (isset($_POST['delete_all'])){
+            Connection::deleteAll();
+        }
 
 ?>
 
@@ -267,6 +320,20 @@ $list = array();
         })
     });
 
+    //$(document).on("click", "#btn_export", function(){
+    //
+    //    var json = <?php //echo $export ?>//;
+    //    alert(json);
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "../exportPDF/export_pdf.php",
+    //        data: {data: json},
+    //        success: function (data) {
+    //            alert(data);
+    //        }
+    //    })
+    //});
+
 
 
 
@@ -287,22 +354,7 @@ $list = array();
 
 
 
-        //json = <?php //echo $json ?>//;
 
 
-    // $.ajax({
-    //    type: "POST",
-    //    url: "data.php",
-    //    data: {details : json},
-    //    success: function(data){
-    //
-    //        $('#update_info').html(data);
-    //        $("#hide").hide();
-    //    }
-    // });
-    //
-    // $("#hide").click(function(){
-    //     $("#hide").hide();
-    // });
 
 </script>
